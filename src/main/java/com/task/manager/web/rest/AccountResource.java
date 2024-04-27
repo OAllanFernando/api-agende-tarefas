@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -62,6 +63,20 @@ public class AccountResource {
         }
         User user = userService.registerUser(managedUserVM, managedUserVM.getPassword());
         mailService.sendActivationEmail(user);
+    }
+
+    @PostMapping("/register-user-for-tasks")
+    public ResponseEntity<Object> registerAccountForTasks(@Valid @RequestBody ManagedUserVM managedUserVM) {
+        System.out.println("AccountResource.registerAccountsssssssssssssssssssssForTasks()");
+        if (isPasswordLengthInvalid(managedUserVM.getPassword())) {
+            throw new InvalidPasswordException();
+        }
+        User user = userService.registerUserForTasks(managedUserVM, managedUserVM.getPassword());
+        // mailService.sendActivationEmail(user);
+        if (user == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().build();
     }
 
     /**
