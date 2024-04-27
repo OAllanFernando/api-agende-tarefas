@@ -1,0 +1,26 @@
+{
+  "annotations": {
+    "changelogDate": "20240427122746"
+  },
+  "applications": "*",
+  "entityTableName": "tag",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    }
+  ],
+  "name": "Tag",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "task",
+      "otherEntityRelationshipName": "tag",
+      "relationshipName": "task",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

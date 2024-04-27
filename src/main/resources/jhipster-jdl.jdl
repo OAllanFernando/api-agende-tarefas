@@ -1,0 +1,31 @@
+
+entity Task {
+	title String
+    description String 
+    executionTime Instant
+    durationMin Long
+    closed Boolean
+}
+
+entity Tag {
+	name String
+}
+
+relationship ManyToMany {
+	Task to Tag
+}
+
+relationship ManyToOne {
+  Task to User with builtInEntity
+}
+
+paginate Task, Tag with pagination
+
+// Set service options to all 
+service all with serviceImpl
+
+/**
+ * Task entity.
+ * @author Allan Fernando software engineer
+ */
+

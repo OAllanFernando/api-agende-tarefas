@@ -1,0 +1,50 @@
+{
+  "annotations": {
+    "changelogDate": "20240427122646"
+  },
+  "applications": "*",
+  "entityTableName": "task",
+  "fields": [
+    {
+      "fieldName": "title",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "executionTime",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "durationMin",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "closed",
+      "fieldType": "Boolean"
+    }
+  ],
+  "name": "Task",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "task",
+      "relationshipName": "user",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipWithBuiltInEntity": true
+    },
+    {
+      "otherEntityName": "tag",
+      "otherEntityRelationshipName": "task",
+      "relationshipName": "tag",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}
