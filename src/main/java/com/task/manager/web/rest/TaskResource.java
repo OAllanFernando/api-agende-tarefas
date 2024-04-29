@@ -221,4 +221,33 @@ public class TaskResource {
 
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
+
+    /**
+     * {@code GET  /tasks} : get all the tasks by title.
+     *
+     * @param pageable  the pagination information.
+     * @param eagerload flag to eager load entities from relationships (This is
+     *                  applicable for many-to-many).
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of tasks in body.
+     */
+    @GetMapping("/tasks-by-title/{title}/{userId}")
+    public ResponseEntity<List<Task>> getAllTasksByTitle(
+        @PathVariable String title,
+        @PathVariable Long userId,
+        @ParameterObject Pageable pageable,
+        @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
+    ) {
+        log.debug("REST request to get a page of Tasks with title: {}", title);
+        Page<Task> page;
+        if (eagerload) {
+            page = taskService.findAllByUserIdAndTitleWithEagerRelationships(userId, title, pageable);
+        } else {
+            page = taskService.findAllByUserIdAndTitle(userId, title, pageable);
+        }
+
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
 }

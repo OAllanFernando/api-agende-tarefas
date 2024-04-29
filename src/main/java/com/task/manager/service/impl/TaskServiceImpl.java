@@ -101,4 +101,16 @@ public class TaskServiceImpl implements TaskService {
         log.debug("Request to get all Tasks by userId");
         return taskRepository.findAllByUserId(userId, pageable);
     }
+
+    @Override
+    public Page<Task> findAllByUserIdAndTitle(Long userId, String title, Pageable pageable) {
+        log.debug("Request to get all Tasks by title");
+        return taskRepository.findAllByUserIdAndTitleContaining(userId, title, pageable);
+    }
+
+    @Override
+    public Page<Task> findAllByUserIdAndTitleWithEagerRelationships(Long userId, String title, Pageable pageable) {
+        log.debug("Request to get all Tasks by title");
+        return taskRepository.findAllByUserIdAndTitleWithEagerRelationships(userId, title, pageable);
+    }
 }

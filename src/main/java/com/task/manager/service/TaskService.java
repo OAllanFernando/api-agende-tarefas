@@ -81,4 +81,22 @@ public interface TaskService {
      * @return
      */
     Page<Task> findAllByUserId(Long userId, Pageable pageable);
+
+    /**
+     * Get all the tasks by title.
+     *
+     * @param title
+     * @param pageable
+     * @return
+     */
+    Page<Task> findAllByUserIdAndTitle(Long userId, String title, Pageable pageable);
+
+    /**
+     * Get all the tasks by title.
+     *
+     * @param title
+     * @param pageable
+     * @return
+     */
+    Page<Task> findAllByUserIdAndTitleWithEagerRelationships(Long userId, String title, Pageable pageable);
 }

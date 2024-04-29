@@ -37,4 +37,10 @@ public interface TaskRepository extends TaskRepositoryWithBagRelationships, JpaR
     }
 
     Page<Task> findAllByUserId(Long userId, Pageable pageable);
+
+    Page<Task> findAllByUserIdAndTitleContaining(Long userId, String title, Pageable pageable);
+
+    default Page<Task> findAllByUserIdAndTitleWithEagerRelationships(Long userId, String title, Pageable pageable) {
+        return this.fetchBagRelationships(this.findAllByUserIdAndTitleContaining(userId, title, pageable));
+    }
 }
