@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,7 +50,9 @@ public class TaskResource {
      * {@code POST  /tasks} : Create a new task.
      *
      * @param task the task to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new task, or with status {@code 400 (Bad Request)} if the task has already an ID.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with
+     *         body the new task, or with status {@code 400 (Bad Request)} if the
+     *         task has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
@@ -68,11 +71,13 @@ public class TaskResource {
     /**
      * {@code PUT  /tasks/:id} : Updates an existing task.
      *
-     * @param id the id of the task to save.
+     * @param id   the id of the task to save.
      * @param task the task to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated task,
-     * or with status {@code 400 (Bad Request)} if the task is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the task couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the updated task,
+     *         or with status {@code 400 (Bad Request)} if the task is not valid,
+     *         or with status {@code 500 (Internal Server Error)} if the task
+     *         couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
@@ -98,14 +103,17 @@ public class TaskResource {
     }
 
     /**
-     * {@code PATCH  /tasks/:id} : Partial updates given fields of an existing task, field will ignore if it is null
+     * {@code PATCH  /tasks/:id} : Partial updates given fields of an existing task,
+     * field will ignore if it is null
      *
-     * @param id the id of the task to save.
+     * @param id   the id of the task to save.
      * @param task the task to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated task,
-     * or with status {@code 400 (Bad Request)} if the task is not valid,
-     * or with status {@code 404 (Not Found)} if the task is not found,
-     * or with status {@code 500 (Internal Server Error)} if the task couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the updated task,
+     *         or with status {@code 400 (Bad Request)} if the task is not valid,
+     *         or with status {@code 404 (Not Found)} if the task is not found,
+     *         or with status {@code 500 (Internal Server Error)} if the task
+     *         couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
@@ -134,9 +142,11 @@ public class TaskResource {
     /**
      * {@code GET  /tasks} : get all the tasks.
      *
-     * @param pageable the pagination information.
-     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of tasks in body.
+     * @param pageable  the pagination information.
+     * @param eagerload flag to eager load entities from relationships (This is
+     *                  applicable for many-to-many).
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of tasks in body.
      */
     @GetMapping("")
     public ResponseEntity<List<Task>> getAllTasks(
@@ -158,7 +168,8 @@ public class TaskResource {
      * {@code GET  /tasks/:id} : get the "id" task.
      *
      * @param id the id of the task to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the task, or with status {@code 404 (Not Found)}.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the task, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
     public ResponseEntity<Task> getTask(@PathVariable("id") Long id) {
@@ -181,5 +192,33 @@ public class TaskResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    /**
+     * {@code GET  /tasks} : get all the tasks by the user.
+     *
+     * @param pageable  the pagination information.
+     * @param eagerload flag to eager load entities from relationships (This is
+     *                  applicable for many-to-many).
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of tasks in body.
+     */
+    @GetMapping("/user-tasks/{userId}")
+    public ResponseEntity<List<Task>> getAllTasksByUser(
+        @PathVariable Long userId,
+        @ParameterObject Pageable pageable,
+        @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
+    ) {
+        log.debug("REST request to get a page of Tasks for user with ID: {}", userId);
+        Page<Task> page;
+        if (eagerload) {
+            page = taskService.findAllByUserIdWithEagerRelationships(userId, pageable);
+        } else {
+            page = taskService.findAllByUserId(userId, pageable);
+        }
+
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 }

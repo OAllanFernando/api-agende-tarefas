@@ -12,7 +12,8 @@ import org.springframework.stereotype.Repository;
  * Spring Data JPA repository for the Task entity.
  *
  * When extending this class, extend TaskRepositoryWithBagRelationships too.
- * For more information refer to https://github.com/jhipster/generator-jhipster/issues/17990.
+ * For more information refer to
+ * https://github.com/jhipster/generator-jhipster/issues/17990.
  */
 @Repository
 public interface TaskRepository extends TaskRepositoryWithBagRelationships, JpaRepository<Task, Long> {
@@ -30,4 +31,10 @@ public interface TaskRepository extends TaskRepositoryWithBagRelationships, JpaR
     default Page<Task> findAllWithEagerRelationships(Pageable pageable) {
         return this.fetchBagRelationships(this.findAll(pageable));
     }
+
+    default Page<Task> findAllByUserIdWithEagerRelationships(Long userId, Pageable pageable) {
+        return this.fetchBagRelationships(this.findAllByUserId(userId, pageable));
+    }
+
+    Page<Task> findAllByUserId(Long userId, Pageable pageable);
 }

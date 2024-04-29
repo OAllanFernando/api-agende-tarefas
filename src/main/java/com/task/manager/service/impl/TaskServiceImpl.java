@@ -89,4 +89,16 @@ public class TaskServiceImpl implements TaskService {
         log.debug("Request to delete Task : {}", id);
         taskRepository.deleteById(id);
     }
+
+    @Override
+    public Page<Task> findAllByUserIdWithEagerRelationships(Long userId, Pageable pageable) {
+        log.debug("Request to get all Tasks by userId");
+        return taskRepository.findAllByUserIdWithEagerRelationships(userId, pageable);
+    }
+
+    @Override
+    public Page<Task> findAllByUserId(Long userId, Pageable pageable) {
+        log.debug("Request to get all Tasks by userId");
+        return taskRepository.findAllByUserId(userId, pageable);
+    }
 }

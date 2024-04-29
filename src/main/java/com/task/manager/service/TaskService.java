@@ -63,4 +63,22 @@ public interface TaskService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    /**
+     * Get all the tasks by userId.
+     *
+     * @param userId
+     * @param pageable
+     * @return
+     */
+    Page<Task> findAllByUserIdWithEagerRelationships(Long userId, Pageable pageable);
+
+    /**
+     * Get all the tasks by userId.
+     *
+     * @param userId
+     * @param pageable
+     * @return
+     */
+    Page<Task> findAllByUserId(Long userId, Pageable pageable);
 }
