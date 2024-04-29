@@ -6,6 +6,12 @@ import com.task.manager.service.TaskService;
 import com.task.manager.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -244,6 +250,54 @@ public class TaskResource {
             page = taskService.findAllByUserIdAndTitleWithEagerRelationships(userId, title, pageable);
         } else {
             page = taskService.findAllByUserIdAndTitle(userId, title, pageable);
+        }
+
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /tasks} : get all the tasks by day
+     *
+     * @param pageable  the pagination information.
+     * @param eagerload flag to eager load entities from relationships (This is
+     *                  applicable for many-to-many).
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of tasks in body.
+     */
+
+    @GetMapping("/tasks-by-day/{day}/{userId}")
+    public ResponseEntity<List<Task>> getAllTasksByDay(
+        @PathVariable String day,
+        @PathVariable Long userId,
+        @ParameterObject Pageable pageable,
+        @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
+    ) {
+        log.debug("REST request to get a page of Tasks with day: {}", day);
+
+        LocalDateTime localDateTime;
+        try {
+            // Formate a string 'day' para LocalDateTime
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate parsedDate = LocalDate.parse(day, formatter);
+            localDateTime = parsedDate.atStartOfDay();
+        } catch (DateTimeParseException e) {
+            // Se não for possível analisar a data, retorne um erro 400 Bad Request
+            return ResponseEntity.badRequest().build();
+        }
+
+        int year = localDateTime.getYear();
+        int month = localDateTime.getMonthValue();
+        int dayOfMonth = localDateTime.getDayOfMonth();
+
+        System.out.println("year: " + year + " month: " + month + " dayOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafMonth: " + dayOfMonth);
+
+        Page<Task> page;
+        if (eagerload) {
+            page = taskService.findAllByUserIdAndExecutionTimeWithEagerRelationships(userId, year, month, dayOfMonth, pageable);
+        } else {
+            page = taskService.findAllByUserIdAndExecutionTime(userId, year, month, dayOfMonth, pageable);
         }
 
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);

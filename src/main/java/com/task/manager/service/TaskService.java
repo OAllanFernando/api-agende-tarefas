@@ -1,6 +1,7 @@
 package com.task.manager.service;
 
 import com.task.manager.domain.Task;
+import java.time.Instant;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -99,4 +100,22 @@ public interface TaskService {
      * @return
      */
     Page<Task> findAllByUserIdAndTitleWithEagerRelationships(Long userId, String title, Pageable pageable);
+
+    /**
+     * Get all the tasks by day.
+     *
+     * @param executionTime
+     * @param pageable
+     * @return
+     */
+    Page<Task> findAllByUserIdAndExecutionTimeWithEagerRelationships(Long userId, int year, int month, int day, Pageable pageable);
+
+    /**
+     * Get all the tasks by day.
+     *
+     * @param executionTime
+     * @param pageable
+     * @return
+     */
+    Page<Task> findAllByUserIdAndExecutionTime(Long userId, int year, int month, int day, Pageable pageable);
 }

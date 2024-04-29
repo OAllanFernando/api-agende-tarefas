@@ -1,6 +1,9 @@
 package com.task.manager.repository;
 
 import com.task.manager.domain.Task;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -42,5 +45,14 @@ public interface TaskRepository extends TaskRepositoryWithBagRelationships, JpaR
 
     default Page<Task> findAllByUserIdAndTitleWithEagerRelationships(Long userId, String title, Pageable pageable) {
         return this.fetchBagRelationships(this.findAllByUserIdAndTitleContaining(userId, title, pageable));
+    }
+
+    @Query(
+        "select task from Task task where task.user.id = :userId and function('YEAR', task.executionTime) = :year and function('MONTH', task.executionTime) = :month and function('DAY', task.executionTime) = :day"
+    )
+    Page<Task> findAllByUserIdAndExecutionTime(Long userId, int year, int month, int day, Pageable pageable);
+
+    default Page<Task> findAllByUserIdAndExecutionTimeWithEagerRelationships(Long userId, int year, int month, int day, Pageable pageable) {
+        return this.fetchBagRelationships(this.findAllByUserIdAndExecutionTime(userId, year, month, day, pageable));
     }
 }
