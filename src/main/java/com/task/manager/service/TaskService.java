@@ -142,4 +142,22 @@ public interface TaskService {
         Instant endDate,
         Pageable pageable
     );
+
+    /**
+     * Get all the tasks by month.
+     *
+     * @param executionTime
+     * @param pageable
+     * @return
+     */
+    Page<Task> findAllByUserIdAndExecutionTimeByMonth(Long userId, int year, int month, Pageable pageable);
+
+    /**
+     * Get all the tasks by month.
+     *
+     * @param executionTime
+     * @param pageable
+     * @return
+     */
+    Page<Task> findAllByUserIdAndExecutionTimeByMonthWithEagerRelationships(Long userId, int year, int month, Pageable pageable);
 }

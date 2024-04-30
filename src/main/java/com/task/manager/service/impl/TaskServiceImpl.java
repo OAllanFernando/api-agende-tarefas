@@ -144,4 +144,16 @@ public class TaskServiceImpl implements TaskService {
         log.debug("Request to get all Tasks by week");
         return taskRepository.findAllByUserIdAndExecutionTimeByWeekWithEagerRelationships(userId, startDate, endDate, pageable);
     }
+
+    @Override
+    public Page<Task> findAllByUserIdAndExecutionTimeByMonth(Long userId, int year, int month, Pageable pageable) {
+        log.debug("Request to get all Tasks by month");
+        return taskRepository.findAllByUserIdAndExecutionTimeByMonth(userId, year, month, pageable);
+    }
+
+    @Override
+    public Page<Task> findAllByUserIdAndExecutionTimeByMonthWithEagerRelationships(Long userId, int year, int month, Pageable pageable) {
+        log.debug("Request to get all Tasks by month");
+        return taskRepository.findAllByUserIdAndExecutionTimeByMonthWithEagerRelationships(userId, year, month, pageable);
+    }
 }

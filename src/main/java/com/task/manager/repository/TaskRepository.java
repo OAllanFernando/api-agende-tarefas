@@ -69,4 +69,13 @@ public interface TaskRepository extends TaskRepositoryWithBagRelationships, JpaR
     ) {
         return this.fetchBagRelationships(this.findAllByUserIdAndExecutionTimeByWeek(userId, startDate, endDate, pageable));
     }
+
+    @Query(
+        "select task from Task task where task.user.id = :userId and function('YEAR', task.executionTime) = :year and function('MONTH', task.executionTime) = :month"
+    )
+    Page<Task> findAllByUserIdAndExecutionTimeByMonth(Long userId, int year, int month, Pageable pageable);
+
+    default Page<Task> findAllByUserIdAndExecutionTimeByMonthWithEagerRelationships(Long userId, int year, int month, Pageable pageable) {
+        return this.fetchBagRelationships(this.findAllByUserIdAndExecutionTimeByMonth(userId, year, month, pageable));
+    }
 }

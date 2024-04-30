@@ -331,18 +331,17 @@ public class TaskResource {
         try {
             String weekString = week; // Formato: "2021-W01"
 
-            // Extrair o ano e o número da semana da string
             int year = Integer.parseInt(weekString.substring(0, 4));
             int weekNumber = Integer.parseInt(weekString.substring(6));
 
-            // Obter a data de início da semana
+            // pega a data de inicio da semana
             LocalDate startDate = LocalDate
                 .ofYearDay(year, 1)
                 .with(WeekFields.ISO.weekOfWeekBasedYear(), weekNumber)
                 .with(DayOfWeek.MONDAY);
 
-            // Obter a data de término da semana
-            LocalDate endDate = startDate.plusDays(6); // A semana tem 7 dias
+            // pega a data de termino da semana
+            LocalDate endDate = startDate.plusDays(6);
 
             Instant startDateInstant = startDate.atStartOfDay(ZoneId.systemDefault()).with(LocalTime.MIN).toInstant();
             Instant endDateInstant = endDate
@@ -366,6 +365,45 @@ public class TaskResource {
             } else {
                 page = taskService.findAllByUserIdAndExecutionTimeByWeek(userId, startDateInstant, endDateInstant, pageable);
             }
+            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+
+            return ResponseEntity.ok().headers(headers).body(page.getContent());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    /**
+     * {@code GET  /tasks} : get all the tasks by month
+     *
+     * @param pageable  the pagination information.
+     * @param eagerload flag to eager load entities from relationships (This is
+     *                  applicable for many-to-many).
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of tasks in body.
+     */
+    @GetMapping("/tasks-by-month/{month}/{userId}")
+    public ResponseEntity<List<Task>> getAllTasksByMonth(
+        @PathVariable String month,
+        @PathVariable Long userId,
+        @ParameterObject Pageable pageable,
+        @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
+    ) {
+        log.debug("REST request to get a page of Tasks with month: {}", month);
+
+        try {
+            String monthString = month; // Formato: "2021-01"
+
+            int year = Integer.parseInt(monthString.substring(0, 4));
+            int monthNumber = Integer.parseInt(monthString.substring(5));
+
+            Page<Task> page;
+            if (eagerload) {
+                page = taskService.findAllByUserIdAndExecutionTimeByMonthWithEagerRelationships(userId, year, monthNumber, pageable);
+            } else {
+                page = taskService.findAllByUserIdAndExecutionTimeByMonth(userId, year, monthNumber, pageable);
+            }
+
             HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
 
             return ResponseEntity.ok().headers(headers).body(page.getContent());
