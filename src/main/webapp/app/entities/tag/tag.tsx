@@ -116,6 +116,9 @@ export const Tag = () => {
                 <th className="hand" onClick={sort('name')}>
                   <Translate contentKey="taskManagerApp.tag.name">Name</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('name')} />
                 </th>
+                <th>
+                  <Translate contentKey="taskManagerApp.tag.user">User</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
                 <th />
               </tr>
             </thead>
@@ -128,6 +131,7 @@ export const Tag = () => {
                     </Button>
                   </td>
                   <td>{tag.name}</td>
+                  <td>{tag.user ? tag.user.id : ''}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/tag/${tag.id}`} color="info" size="sm" data-cy="entityDetailsButton">

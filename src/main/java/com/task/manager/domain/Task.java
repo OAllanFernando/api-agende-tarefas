@@ -42,7 +42,7 @@ public class Task implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "rel_task__tag", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    @JsonIgnoreProperties(value = { "tasks" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "user", "tasks" }, allowSetters = true)
     private Set<Tag> tags = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

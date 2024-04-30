@@ -17,7 +17,6 @@ relationship ManyToMany {
 
 relationship ManyToOne {
   Task to User with builtInEntity
-  Tag to User with builtInEntity
 }
 
 paginate Task, Tag with pagination
@@ -29,3 +28,4 @@ service all with serviceImpl
  * Task entity.
  * @author Allan Fernando software engineer
  */
+

@@ -37,6 +37,10 @@ export const TagDetail = () => {
             </span>
           </dt>
           <dd>{tagEntity.name}</dd>
+          <dt>
+            <Translate contentKey="taskManagerApp.tag.user">User</Translate>
+          </dt>
+          <dd>{tagEntity.user ? tagEntity.user.id : ''}</dd>
         </dl>
         <Button tag={Link} to="/tag" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

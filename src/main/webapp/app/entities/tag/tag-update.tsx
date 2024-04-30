@@ -8,6 +8,8 @@ import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateT
 import { mapIdList } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
+import { IUser } from 'app/shared/model/user.model';
+import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
 import { ITask } from 'app/shared/model/task.model';
 import { getEntities as getTasks } from 'app/entities/task/task.reducer';
 import { ITag } from 'app/shared/model/tag.model';
@@ -21,6 +23,7 @@ export const TagUpdate = () => {
   const { id } = useParams<'id'>();
   const isNew = id === undefined;
 
+  const users = useAppSelector(state => state.userManagement.users);
   const tasks = useAppSelector(state => state.task.entities);
   const tagEntity = useAppSelector(state => state.tag.entity);
   const loading = useAppSelector(state => state.tag.loading);
@@ -38,6 +41,7 @@ export const TagUpdate = () => {
       dispatch(getEntity(id));
     }
 
+    dispatch(getUsers({}));
     dispatch(getTasks({}));
   }, []);
 
@@ -56,6 +60,7 @@ export const TagUpdate = () => {
     const entity = {
       ...tagEntity,
       ...values,
+      user: users.find(it => it.id.toString() === values.user.toString()),
     };
 
     if (isNew) {
@@ -70,6 +75,7 @@ export const TagUpdate = () => {
       ? {}
       : {
           ...tagEntity,
+          user: tagEntity?.user?.id,
         };
 
   return (
@@ -98,6 +104,16 @@ export const TagUpdate = () => {
                 />
               ) : null}
               <ValidatedField label={translate('taskManagerApp.tag.name')} id="tag-name" name="name" data-cy="name" type="text" />
+              <ValidatedField id="tag-user" name="user" data-cy="user" label={translate('taskManagerApp.tag.user')} type="select">
+                <option value="" key="0" />
+                {users
+                  ? users.map(otherEntity => (
+                      <option value={otherEntity.id} key={otherEntity.id}>
+                        {otherEntity.id}
+                      </option>
+                    ))
+                  : null}
+              </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/tag" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

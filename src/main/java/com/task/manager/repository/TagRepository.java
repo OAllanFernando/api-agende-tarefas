@@ -1,8 +1,7 @@
 package com.task.manager.repository;
 
 import com.task.manager.domain.Tag;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -12,5 +11,6 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
-    // Page<Tag> findAllByUserId(Long userId, Pageable pageable);
+    @Query("select tag from Tag tag where tag.user.login = ?#{authentication.name}")
+    List<Tag> findByUserIsCurrentUser();
 }

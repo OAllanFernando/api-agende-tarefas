@@ -24,6 +24,9 @@ public class Tag implements Serializable {
     @Column(name = "name")
     private String name;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
+
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "tags")
     @JsonIgnoreProperties(value = { "user", "tags" }, allowSetters = true)
     private Set<Task> tasks = new HashSet<>();
@@ -54,6 +57,19 @@ public class Tag implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public User getUser() {
+        return this.user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Tag user(User user) {
+        this.setUser(user);
+        return this;
     }
 
     public Set<Task> getTasks() {
