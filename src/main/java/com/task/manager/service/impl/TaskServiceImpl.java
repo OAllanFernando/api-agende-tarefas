@@ -4,6 +4,7 @@ import com.task.manager.domain.Task;
 import com.task.manager.repository.TaskRepository;
 import com.task.manager.service.TaskService;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,5 +126,22 @@ public class TaskServiceImpl implements TaskService {
     public Page<Task> findAllByUserIdAndExecutionTimeWithEagerRelationships(Long userId, int year, int month, int day, Pageable pageable) {
         log.debug("Request to get all Tasks by day");
         return taskRepository.findAllByUserIdAndExecutionTimeWithEagerRelationships(userId, year, month, day, pageable);
+    }
+
+    @Override
+    public Page<Task> findAllByUserIdAndExecutionTimeByWeek(Long userId, Instant startDate, Instant endDate, Pageable pageable) {
+        log.debug("Request to get all Tasks by week");
+        return taskRepository.findAllByUserIdAndExecutionTimeByWeek(userId, startDate, endDate, pageable);
+    }
+
+    @Override
+    public Page<Task> findAllByUserIdAndExecutionTimeByWeekWithEagerRelationships(
+        Long userId,
+        Instant startDate,
+        Instant endDate,
+        Pageable pageable
+    ) {
+        log.debug("Request to get all Tasks by week");
+        return taskRepository.findAllByUserIdAndExecutionTimeByWeekWithEagerRelationships(userId, startDate, endDate, pageable);
     }
 }

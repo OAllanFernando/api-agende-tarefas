@@ -2,6 +2,7 @@ package com.task.manager.service;
 
 import com.task.manager.domain.Task;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -118,4 +119,27 @@ public interface TaskService {
      * @return
      */
     Page<Task> findAllByUserIdAndExecutionTime(Long userId, int year, int month, int day, Pageable pageable);
+
+    /**
+     * Get all the tasks by week.
+     *
+     * @param executionTime
+     * @param pageable
+     * @return
+     */
+    Page<Task> findAllByUserIdAndExecutionTimeByWeek(Long userId, Instant startDate, Instant endDate, Pageable pageable);
+
+    /**
+     * Get all the tasks by week.
+     *
+     * @param executionTime
+     * @param pageable
+     * @return
+     */
+    Page<Task> findAllByUserIdAndExecutionTimeByWeekWithEagerRelationships(
+        Long userId,
+        Instant startDate,
+        Instant endDate,
+        Pageable pageable
+    );
 }
