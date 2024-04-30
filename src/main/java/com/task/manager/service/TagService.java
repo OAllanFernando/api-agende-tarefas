@@ -1,6 +1,7 @@
 package com.task.manager.service;
 
 import com.task.manager.domain.Tag;
+import com.task.manager.domain.Task;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -55,4 +56,13 @@ public interface TagService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    /**
+     * Get all the tags by user id.
+     *
+     * @param userId   the id of the user.
+     * @param pageable the pagination information.
+     * @return the list of entities.
+     */
+    Page<Tag> findAllByUserId(Long userId, Pageable pageable);
 }

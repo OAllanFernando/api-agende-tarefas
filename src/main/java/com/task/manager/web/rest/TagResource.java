@@ -1,6 +1,7 @@
 package com.task.manager.web.rest;
 
 import com.task.manager.domain.Tag;
+import com.task.manager.domain.Task;
 import com.task.manager.repository.TagRepository;
 import com.task.manager.service.TagService;
 import com.task.manager.web.rest.errors.BadRequestAlertException;
@@ -11,6 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,7 +51,9 @@ public class TagResource {
      * {@code POST  /tags} : Create a new tag.
      *
      * @param tag the tag to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new tag, or with status {@code 400 (Bad Request)} if the tag has already an ID.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with
+     *         body the new tag, or with status {@code 400 (Bad Request)} if the tag
+     *         has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
@@ -68,11 +72,13 @@ public class TagResource {
     /**
      * {@code PUT  /tags/:id} : Updates an existing tag.
      *
-     * @param id the id of the tag to save.
+     * @param id  the id of the tag to save.
      * @param tag the tag to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated tag,
-     * or with status {@code 400 (Bad Request)} if the tag is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the tag couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the updated tag,
+     *         or with status {@code 400 (Bad Request)} if the tag is not valid,
+     *         or with status {@code 500 (Internal Server Error)} if the tag
+     *         couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
@@ -98,14 +104,17 @@ public class TagResource {
     }
 
     /**
-     * {@code PATCH  /tags/:id} : Partial updates given fields of an existing tag, field will ignore if it is null
+     * {@code PATCH  /tags/:id} : Partial updates given fields of an existing tag,
+     * field will ignore if it is null
      *
-     * @param id the id of the tag to save.
+     * @param id  the id of the tag to save.
      * @param tag the tag to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated tag,
-     * or with status {@code 400 (Bad Request)} if the tag is not valid,
-     * or with status {@code 404 (Not Found)} if the tag is not found,
-     * or with status {@code 500 (Internal Server Error)} if the tag couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the updated tag,
+     *         or with status {@code 400 (Bad Request)} if the tag is not valid,
+     *         or with status {@code 404 (Not Found)} if the tag is not found,
+     *         or with status {@code 500 (Internal Server Error)} if the tag
+     *         couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
@@ -135,7 +144,8 @@ public class TagResource {
      * {@code GET  /tags} : get all the tags.
      *
      * @param pageable the pagination information.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of tags in body.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of tags in body.
      */
     @GetMapping("")
     public ResponseEntity<List<Tag>> getAllTags(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
@@ -149,7 +159,8 @@ public class TagResource {
      * {@code GET  /tags/:id} : get the "id" tag.
      *
      * @param id the id of the tag to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the tag, or with status {@code 404 (Not Found)}.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the tag, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
     public ResponseEntity<Tag> getTag(@PathVariable("id") Long id) {
@@ -172,5 +183,30 @@ public class TagResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    /**
+     * {@code GET  /tasks} : get all the tags by the user.
+     *
+     * @param pageable  the pagination information.
+     * @param eagerload flag to eager load entities from relationships (This is
+     *                  applicable for many-to-many).
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of tasks in body.
+     */
+    @GetMapping("/user-tags/{userId}")
+    public ResponseEntity<List<Tag>> getAllTasksByUser(
+        @PathVariable Long userId,
+        @ParameterObject Pageable pageable,
+        @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
+    ) {
+        log.debug("REST request to get a page of Tasks for user with ID: {}", userId);
+        Page<Tag> page;
+
+        page = tagService.findAllByUserId(userId, pageable);
+
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 }
