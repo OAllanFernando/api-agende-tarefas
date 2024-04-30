@@ -56,7 +56,6 @@ public interface TagService {
      * @param id the id of the entity.
      */
     void delete(Long id);
-
     /**
      * Get all the tags by user id.
      *
@@ -64,5 +63,5 @@ public interface TagService {
      * @param pageable the pagination information.
      * @return the list of entities.
      */
-    Page<Tag> findAllByUserId(Long userId, Pageable pageable);
+    // Page<Tag> findAllByUserId(Long userId, Pageable pageable);
 }

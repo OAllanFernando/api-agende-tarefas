@@ -73,10 +73,9 @@ public class TagServiceImpl implements TagService {
         log.debug("Request to delete Tag : {}", id);
         tagRepository.deleteById(id);
     }
-
-    @Override
-    public Page<Tag> findAllByUserId(Long userId, Pageable pageable) {
-        log.debug("Request to get all Tags by user id");
-        return tagRepository.findAllByUserId(userId, pageable);
-    }
+    // @Override
+    // public Page<Tag> findAllByUserId(Long userId, Pageable pageable) {
+    // log.debug("Request to get all Tags by user id");
+    // return tagRepository.findAllByUserId(userId, pageable);
+    // }
 }

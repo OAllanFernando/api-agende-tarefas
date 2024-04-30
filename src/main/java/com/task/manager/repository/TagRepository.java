@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
-    Page<Tag> findAllByUserId(Long userId, Pageable pageable);
+    // Page<Tag> findAllByUserId(Long userId, Pageable pageable);
 }
