@@ -1,11 +1,16 @@
 package com.task.manager.service.impl;
 
+import com.task.manager.domain.Tag;
 import com.task.manager.domain.Task;
 import com.task.manager.repository.TaskRepository;
 import com.task.manager.service.TaskService;
+import jakarta.persistence.EntityNotFoundException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -155,5 +160,19 @@ public class TaskServiceImpl implements TaskService {
     public Page<Task> findAllByUserIdAndExecutionTimeByMonthWithEagerRelationships(Long userId, int year, int month, Pageable pageable) {
         log.debug("Request to get all Tasks by month");
         return taskRepository.findAllByUserIdAndExecutionTimeByMonthWithEagerRelationships(userId, year, month, pageable);
+    }
+
+    @Override
+    public void updateTags(Long taskId, List<Tag> tags) {
+        log.debug("Request to update Task tags : {}", taskId);
+        Task task = taskRepository.findById(taskId).orElseThrow(() -> new EntityNotFoundException("Task not found with id: " + taskId));
+
+        Set<Tag> tagsToUpdate = new HashSet<>(tags);
+
+        // Atualizar as tags da tarefa
+        task.setTags(tagsToUpdate);
+
+        // Salvar a tarefa atualizada no banco de dados
+        taskRepository.save(task);
     }
 }

@@ -1,5 +1,6 @@
 package com.task.manager.web.rest;
 
+import com.task.manager.domain.Tag;
 import com.task.manager.domain.Task;
 import com.task.manager.repository.TaskRepository;
 import com.task.manager.service.TaskService;
@@ -12,12 +13,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.WeekFields;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -72,6 +71,8 @@ public class TaskResource {
         if (task.getId() != null) {
             throw new BadRequestAlertException("A new task cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        System.out.println("Task: " + task.getTags());
+
         Task result = taskService.save(task);
         return ResponseEntity
             .created(new URI("/api/tasks/" + result.getId()))
@@ -410,5 +411,13 @@ public class TaskResource {
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @PostMapping("/{taskId}/update-tags")
+    public ResponseEntity<Optional<Task>> updateTags(@PathVariable Long taskId, @RequestBody List<Tag> tags) {
+        log.debug("REST request to update tags of Task : {}", taskId);
+        taskService.updateTags(taskId, tags);
+        Optional<Task> updatedTask = taskService.findOne(taskId); // Replace 'result' with the appropriate variable name
+        return ResponseEntity.ok().body(updatedTask);
     }
 }

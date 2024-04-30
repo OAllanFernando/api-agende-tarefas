@@ -1,8 +1,10 @@
 package com.task.manager.service;
 
+import com.task.manager.domain.Tag;
 import com.task.manager.domain.Task;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -160,4 +162,6 @@ public interface TaskService {
      * @return
      */
     Page<Task> findAllByUserIdAndExecutionTimeByMonthWithEagerRelationships(Long userId, int year, int month, Pageable pageable);
+
+    void updateTags(Long taskId, List<Tag> tags);
 }
