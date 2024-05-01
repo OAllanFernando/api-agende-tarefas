@@ -1,3 +1,17 @@
+A porta para o front está liberada no cors para a http://localhost:3000, caso tenha problemas adicione a url do front em
+scr/main/resources/config/application-dev.yml Linha 72
+
+mvnw roda o projeto
+
+O nome do banco é
+tasks
+user: root
+
+Pra configurar
+scr/main/resources/config/application-dev.yml linha 35
+
+precia inserir no pon.xml tbm linha 809
+
 # taskManager
 
 This application was generated using JHipster 8.1.0, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v8.1.0](https://www.jhipster.tech/documentation-archive/v8.1.0).
