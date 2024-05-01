@@ -420,4 +420,18 @@ public class TaskResource {
         Optional<Task> updatedTask = taskService.findOne(taskId); // Replace 'result' with the appropriate variable name
         return ResponseEntity.ok().body(updatedTask);
     }
+
+    @GetMapping("/rel/{userId}")
+    public ResponseEntity<Object> getTasksForRel(@PathVariable Long userId) {
+        log.debug("REST request to get a page of Tasks for user with ID: {}", userId);
+        Object tasks = taskService.getTasksForRel(userId);
+        return ResponseEntity.ok().body(tasks);
+    }
+
+    @GetMapping("/rel/{userId}/solved")
+    public ResponseEntity<Object> countResolvedTasksByTag(@PathVariable Long userId) {
+        log.debug("REST request to get a page of Tasks for user with ID: {}", userId);
+        Object tasks = taskService.countResolvedTasksByTag(userId);
+        return ResponseEntity.ok().body(tasks);
+    }
 }

@@ -163,5 +163,30 @@ public interface TaskService {
      */
     Page<Task> findAllByUserIdAndExecutionTimeByMonthWithEagerRelationships(Long userId, int year, int month, Pageable pageable);
 
+    /**
+     * Update tags of the task.
+     *
+     * @param executionTime
+     * @param pageable
+     * @return
+     */
     void updateTags(Long taskId, List<Tag> tags);
+
+    /**
+     * Get all the tasks by userId for report of solved and non solved.
+     *
+     * @param userId
+     * @param pageable
+     * @return
+     */
+    Object getTasksForRel(Long userId);
+
+    /**
+     * Get all the tasks by userId for report of solved and non solved.
+     *
+     * @param userId
+     * @param pageable
+     * @return
+     */
+    Object countResolvedTasksByTag(Long userId);
 }

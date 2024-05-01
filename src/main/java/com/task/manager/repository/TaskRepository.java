@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -78,4 +79,15 @@ public interface TaskRepository extends TaskRepositoryWithBagRelationships, JpaR
     default Page<Task> findAllByUserIdAndExecutionTimeByMonthWithEagerRelationships(Long userId, int year, int month, Pageable pageable) {
         return this.fetchBagRelationships(this.findAllByUserIdAndExecutionTimeByMonth(userId, year, month, pageable));
     }
+
+    @Query("SELECT COUNT(task) FROM Task task WHERE task.user.id = :userId AND task.executionTime < CURRENT_TIMESTAMP")
+    Long countPastTasks(@Param("userId") Long userId);
+
+    @Query("SELECT COUNT(task) FROM Task task WHERE task.user.id = :userId AND task.executionTime >= CURRENT_TIMESTAMP")
+    Long countAllTasks(@Param("userId") Long userId);
+
+    @Query(
+        "SELECT t.name, COUNT(t.name) FROM Task task JOIN task.tags t WHERE task.user.id = :userId AND task.executionTime < CURRENT_TIMESTAMP GROUP BY t.name"
+    )
+    List<Object[]> countResolvedTasksByTag(@Param("userId") Long userId);
 }

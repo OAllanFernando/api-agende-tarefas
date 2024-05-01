@@ -7,8 +7,11 @@ import com.task.manager.service.TaskService;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -174,5 +177,42 @@ public class TaskServiceImpl implements TaskService {
 
         // Salvar a tarefa atualizada no banco de dados
         taskRepository.save(task);
+    }
+
+    @Override
+    public Object[] getTasksForRel(Long userId) {
+        log.debug("Request to get all Tasks by userId");
+
+        Object[] result = new Object[2];
+        result[0] =
+            new Object() {
+                public String name = "Já realizadas";
+                public Long uv = taskRepository.countPastTasks(userId);
+            };
+        result[1] =
+            new Object() {
+                public String name = "A realizar";
+                public Long uv = taskRepository.countAllTasks(userId);
+            };
+
+        return result;
+    }
+
+    @Override
+    public List<Object> countResolvedTasksByTag(Long userId) {
+        List<Object[]> resolvedTasksByTag = taskRepository.countResolvedTasksByTag(userId);
+        List<Object> result = new ArrayList<>();
+
+        for (Object[] item : resolvedTasksByTag) {
+            String tagName = (String) item[0];
+            Long count = (Long) item[1];
+
+            Map<String, Object> tagObject = new HashMap<>();
+            tagObject.put("name", tagName);
+            tagObject.put("uv", count);
+            result.add(tagObject);
+        }
+
+        return result;
     }
 }
